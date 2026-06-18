@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
+// Strip any trailing slash so `${API_URL}/board` never becomes `//board` (404).
+const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8080").replace(/\/+$/, "");
 
 export interface Pick {
   player_id: number;
