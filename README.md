@@ -16,7 +16,9 @@ highest **expected‑value edge** — ranked, filterable, and explained.
 - Pulls the **upcoming MLB slate** (today + tomorrow) with probable pitchers and
   confirmed lineups from the free **MLB StatsAPI**.
 - Trains **XGBoost** models (Poisson objective) on each player's recent game logs
-  to project: pitcher strikeouts, batter hits, total bases, home runs, RBIs, runs.
+  to project **pitcher strikeouts** and **batter Hits+Runs+RBIs (H+R+RBI)** — the
+  two markets we focus on to stay within the free odds-API quota (configurable
+  via `ODDS_MARKETS`).
 - Fetches **live player‑prop lines** from [The Odds API](https://the-odds-api.com).
 - Computes each bet's **edge** (expected value vs. the book's price) and ranks the
   board so the highest‑edge plays float to the top.
