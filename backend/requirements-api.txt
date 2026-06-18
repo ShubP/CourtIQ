@@ -1,0 +1,8 @@
+# Slim deps for the API service only (Render). The API just reads the board
+# from Postgres — it does NOT need pandas/numpy/xgboost (those are pipeline-only
+# and run in GitHub Actions via requirements.txt). Keeps the API build fast.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+SQLAlchemy==2.0.36
+psycopg2-binary==2.9.10
+python-dotenv==1.0.1
