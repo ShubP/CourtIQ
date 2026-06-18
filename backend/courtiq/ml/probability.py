@@ -17,6 +17,17 @@ def american_to_implied_prob(odds: int) -> float:
     return abs(odds) / (abs(odds) + 100.0)
 
 
+def novig_prob_over(over_odds: int | None, under_odds: int | None) -> float | None:
+    """Market's no-vig P(over) from two-way odds (removes the book's hold)."""
+    if over_odds is None or under_odds is None:
+        return None
+    io = american_to_implied_prob(over_odds)
+    iu = american_to_implied_prob(under_odds)
+    if io + iu <= 0:
+        return None
+    return io / (io + iu)
+
+
 def american_from_prob(p: float) -> int:
     """Inverse of american_to_implied_prob — price a probability as US odds."""
     p = min(max(p, 0.02), 0.98)
@@ -38,17 +49,28 @@ def poisson_cdf(k: int, lam: float) -> float:
     return min(1.0, total)
 
 
-def prob_over(predicted: float, line: float, dispersion: float = 1.0) -> float:
+def prob_over(predicted: float, line: float, dispersion_r: float | None = None) -> float:
     """P(stat > line) given a predicted mean.
 
-    Counting stats (Ks, hits, HR...) are modelled as Poisson around the
-    predicted mean. `dispersion` >1 widens the distribution toward the
-    line for over-dispersed stats (kept simple here).
+    Counting sports stats are *over-dispersed* (variance > mean), so a plain
+    Poisson badly under-weights the tails and inflates edges. When a Negative
+    Binomial dispersion `r` is supplied we model:
+        Var = mean + mean^2 / r        (r -> inf reduces to Poisson)
+    which widens the distribution realistically. Falls back to Poisson if r is
+    None (or huge).
     """
-    lam = max(predicted * dispersion, 1e-6)
-    # Lines are typically x.5, so "over" means count >= floor(line)+1.
-    floor_line = math.floor(line)
-    p_over = 1.0 - poisson_cdf(floor_line, lam)
+    mean = max(predicted, 1e-6)
+    floor_line = math.floor(line)  # lines are x.5 -> "over" = count >= floor+1
+
+    if dispersion_r is None or dispersion_r > 1e6:
+        p_over = 1.0 - poisson_cdf(floor_line, mean)
+    else:
+        from scipy.stats import nbinom
+
+        r = max(dispersion_r, 1e-6)
+        p = r / (r + mean)  # scipy nbinom: mean = r*(1-p)/p
+        p_over = float(1.0 - nbinom.cdf(floor_line, r, p))
+
     return min(max(p_over, 1e-6), 1 - 1e-6)
 
 

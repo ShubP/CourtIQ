@@ -28,11 +28,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run pipeline
+      - name: Run pipeline (board)
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
           ODDS_API_REGION: us
-          ODDS_MARKETS: "pitcher_strikeouts,batter_hits,batter_total_bases"
+          ODDS_MARKETS: "pitcher_strikeouts,batter_hits_runs_rbis"
           SEASON: "2026"
         run: python -m courtiq.pipeline
+
+      - name: Refresh backtest metrics (no odds credits used)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SEASON: "2026"
+        run: python -m courtiq.ml.backtest

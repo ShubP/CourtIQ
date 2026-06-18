@@ -11,9 +11,19 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import desc, select
 
+import json
+
 from .config import MARKETS
 from .db import SessionLocal, init_db
-from .models import Game, PipelineRun, Player, PlayerGameLog, Prediction, Team
+from .models import (
+    Game,
+    ModelMetric,
+    PipelineRun,
+    Player,
+    PlayerGameLog,
+    Prediction,
+    Team,
+)
 
 app = FastAPI(title="CourtIQ API", version="0.1.0")
 
@@ -112,6 +122,42 @@ def board(
             for pl in s.execute(select(Player).where(Player.player_id.in_(ids))).scalars():
                 heads[pl.player_id] = pl.headshot_url
         return [_prediction_to_dict(p, heads.get(p.player_id)) for p in preds]
+
+
+@app.get("/model-performance")
+def model_performance() -> list[dict]:
+    """Latest backtest metrics per market for the performance dashboard."""
+    with SessionLocal() as s:
+        rows = s.execute(select(ModelMetric).order_by(desc(ModelMetric.id))).scalars().all()
+        latest: dict[str, ModelMetric] = {}
+        for r in rows:
+            latest.setdefault(r.market, r)  # first seen = newest (desc id)
+        out = []
+        for r in latest.values():
+            out.append({
+                "market": r.market,
+                "market_label": r.market_label,
+                "n_train": r.n_train,
+                "n_test": r.n_test,
+                "mae": r.mae,
+                "rmse": r.rmse,
+                "baseline_mae": r.baseline_mae,
+                "skill_pct": r.skill_pct,
+                "brier_raw": r.brier_raw,
+                "brier_calibrated": r.brier_calibrated,
+                "brier_improvement_pct": (
+                    round((r.brier_raw - r.brier_calibrated) / r.brier_raw * 100, 1)
+                    if r.brier_raw else None
+                ),
+                "hit_rate": r.hit_rate,
+                "roi_proxy": r.roi_proxy,
+                "dispersion_r": r.dispersion_r,
+                "blend_weight": r.blend_weight,
+                "calibration": json.loads(r.calibration_json) if r.calibration_json else [],
+                "model_version": r.model_version,
+                "created_at": r.created_at.isoformat() if r.created_at else None,
+            })
+        return out
 
 
 @app.get("/games")

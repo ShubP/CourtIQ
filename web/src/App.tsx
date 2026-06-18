@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, TrendingUp, Target, Flame } from "lucide-react";
 import { Header } from "./components/Header";
 import { PickRow } from "./components/PickRow";
+import { ModelPerformance } from "./components/ModelPerformance";
 import { Select } from "./components/ui/select";
 import { Card, CardContent } from "./components/ui/card";
 import {
@@ -37,6 +38,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [view, setView] = useState<"board" | "performance">("board");
   const [market, setMarket] = useState("");
   const [date, setDate] = useState("");
   const [rec, setRec] = useState("");
@@ -86,6 +88,30 @@ export default function App() {
       <Header meta={meta} />
 
       <main className="mx-auto max-w-7xl px-4 py-6">
+        {/* Tabs */}
+        <div className="flex gap-1 mb-6 p-1 rounded-xl bg-[var(--color-surface-2)] w-fit">
+          {([["board", "Edge Board"], ["performance", "Model Performance"]] as const).map(
+            ([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setView(key)}
+                className={
+                  "px-4 py-1.5 rounded-lg text-sm font-medium transition-colors " +
+                  (view === key
+                    ? "bg-[var(--color-accent)] text-black"
+                    : "text-[var(--color-muted)] hover:text-[#e6edf6]")
+                }
+              >
+                {label}
+              </button>
+            )
+          )}
+        </div>
+
+        {view === "performance" && <ModelPerformance />}
+
+        {view === "board" && (
+        <>
         <div className="mb-5">
           <h1 className="text-2xl font-bold tracking-tight">Today's Edge Board</h1>
           <p className="text-sm text-[var(--color-muted)]">
@@ -179,6 +205,9 @@ export default function App() {
             <PickRow key={`${p.game_pk}-${p.player_id}-${p.market}`} pick={p} />
           ))}
         </div>
+
+        </>
+        )}
 
         <footer className="mt-10 text-center text-xs text-[var(--color-muted)]">
           CourtIQ · projections are model estimates for informational purposes only · not betting advice

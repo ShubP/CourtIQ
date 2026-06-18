@@ -62,3 +62,8 @@ ODDS_MARKET_KEYS = ",".join(MARKETS.keys())
 ODDS_FETCH_MARKETS = os.getenv(
     "ODDS_MARKETS", "pitcher_strikeouts,batter_hits_runs_rbis"
 )
+
+# Sharp markets are strong priors. We blend the model's probability with the
+# market's no-vig probability so displayed edges reflect genuine, confident
+# disagreement (not model noise). 1.0 = pure model, 0.0 = pure market.
+MODEL_VS_MARKET = float(os.getenv("MODEL_VS_MARKET", "0.5"))

@@ -16,7 +16,7 @@ from sqlalchemy import (
     String,
     UniqueConstraint,
 )
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
@@ -140,6 +140,30 @@ class Prediction(Base):
     bookmaker: Mapped[str | None] = mapped_column(String(60), nullable=True)
     model_version: Mapped[str | None] = mapped_column(String(40), nullable=True)
     game_date: Mapped[str | None] = mapped_column(String(10), index=True, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class ModelMetric(Base):
+    """Backtest metrics per market — powers the Model Performance dashboard."""
+    __tablename__ = "model_metrics"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    market: Mapped[str] = mapped_column(String(40), index=True)
+    market_label: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    n_train: Mapped[int] = mapped_column(Integer, default=0)
+    n_test: Mapped[int] = mapped_column(Integer, default=0)
+    mae: Mapped[float | None] = mapped_column(Float, nullable=True)
+    rmse: Mapped[float | None] = mapped_column(Float, nullable=True)
+    baseline_mae: Mapped[float | None] = mapped_column(Float, nullable=True)
+    skill_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    brier_raw: Mapped[float | None] = mapped_column(Float, nullable=True)
+    brier_calibrated: Mapped[float | None] = mapped_column(Float, nullable=True)
+    hit_rate: Mapped[float | None] = mapped_column(Float, nullable=True)
+    roi_proxy: Mapped[float | None] = mapped_column(Float, nullable=True)
+    dispersion_r: Mapped[float | None] = mapped_column(Float, nullable=True)
+    blend_weight: Mapped[float | None] = mapped_column(Float, nullable=True)
+    calibration_json: Mapped[str | None] = mapped_column(String(4000), nullable=True)
+    model_version: Mapped[str | None] = mapped_column(String(60), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 

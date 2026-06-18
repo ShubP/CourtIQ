@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from .probability import best_edge, prob_over
+from ..config import MODEL_VS_MARKET
+from .probability import best_edge, novig_prob_over, prob_over
 from .train import ModelArtifact
 from . import features as F
 
@@ -25,10 +26,27 @@ def predict_one(
         return None
 
     x = np.array([[feat.get(c, 0.0) for c in artifact.feature_columns]], dtype=float)
-    predicted = float(artifact.model.predict(x)[0])
-    predicted = max(predicted, 0.0)
+    model_pred = max(float(artifact.model.predict(x)[0]), 0.0)
+    # Blend the GBM with the season-average baseline (tuned in training).
+    blend = getattr(artifact, "blend_weight", 1.0)
+    baseline = feat.get(f"{artifact.stat}_avg_season", model_pred)
+    predicted = max(blend * model_pred + (1 - blend) * baseline, 0.0)
 
-    p_over = prob_over(predicted, line)
+    # Negative-Binomial tail prob, then isotonic calibration if available.
+    dispersion = getattr(artifact, "dispersion_r", None)
+    p_over = prob_over(predicted, line, dispersion)
+    calibrator = getattr(artifact, "calibrator", None)
+    if calibrator is not None:
+        p_over = float(calibrator.predict([p_over])[0])
+        p_over = min(max(p_over, 1e-6), 1 - 1e-6)
+
+    # Blend with the market's no-vig probability (sharp markets are a strong
+    # prior) so edges reflect confident disagreement, not model noise.
+    market_p = novig_prob_over(over_odds, under_odds)
+    if market_p is not None:
+        w = MODEL_VS_MARKET
+        p_over = min(max(w * p_over + (1 - w) * market_p, 1e-6), 1 - 1e-6)
+
     recommendation, edge = best_edge(p_over, over_odds, under_odds)
 
     return {

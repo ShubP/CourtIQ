@@ -69,6 +69,35 @@ def _team_side(team_id: int | None, game: statsapi.ScheduledGame):
     return None
 
 
+def _gather_backtest_logs(days: int | None = None) -> dict[str, dict[int, list]]:
+    """Pull season game logs for all probable pitchers + lineup batters on the
+    upcoming slate — a broad, real sample for training/backtesting."""
+    games = statsapi.get_schedule(days=days or LOOKAHEAD_DAYS)
+    pitcher_ids: set[int] = set()
+    batter_ids: set[int] = set()
+    for g in games:
+        for pp in (g.home_probable_pitcher, g.away_probable_pitcher):
+            if pp:
+                pitcher_ids.add(pp.player_id)
+        for lu in (g.home_lineup, g.away_lineup):
+            for p in lu:
+                batter_ids.add(p.player_id)
+
+    logs_by_group: dict[str, dict[int, list]] = {"hitting": {}, "pitching": {}}
+    log.info("Backtest gather: %d pitchers, %d batters", len(pitcher_ids), len(batter_ids))
+    for pid in pitcher_ids:
+        try:
+            logs_by_group["pitching"][pid] = statsapi.get_game_log(pid, "pitching", SEASON)
+        except Exception:  # noqa: BLE001
+            pass
+    for pid in batter_ids:
+        try:
+            logs_by_group["hitting"][pid] = statsapi.get_game_log(pid, "hitting", SEASON)
+        except Exception:  # noqa: BLE001
+            pass
+    return logs_by_group
+
+
 def run_pipeline(limit_games: int | None = None, synthetic_if_no_odds: bool = True) -> dict:
     init_db()
 

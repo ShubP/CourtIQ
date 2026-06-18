@@ -76,6 +76,34 @@ export function fetchBoard(p: BoardParams = {}): Promise<Pick[]> {
   return getJSON<Pick[]>(`/board?${q.toString()}`);
 }
 
+export interface CalibrationPoint {
+  pred: number;
+  actual: number;
+  n: number;
+}
+
+export interface ModelPerf {
+  market: string;
+  market_label: string;
+  n_train: number;
+  n_test: number;
+  mae: number;
+  rmse: number;
+  baseline_mae: number;
+  skill_pct: number;
+  brier_raw: number;
+  brier_calibrated: number;
+  brier_improvement_pct: number | null;
+  hit_rate: number;
+  roi_proxy: number;
+  dispersion_r: number;
+  calibration: CalibrationPoint[];
+  model_version: string;
+  created_at: string | null;
+}
+
+export const fetchModelPerformance = () => getJSON<ModelPerf[]>("/model-performance");
+
 export const fetchMarkets = () => getJSON<Market[]>("/markets");
 export const fetchMeta = () => getJSON<Meta>("/meta");
 export const fetchPlayerHistory = (id: number, stat: string) =>
