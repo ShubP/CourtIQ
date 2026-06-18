@@ -10,11 +10,11 @@ services:
     startCommand: uvicorn courtiq.api:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
-      - key: DATABASE_URL        # Neon Postgres URL (postgresql+psycopg2://...)
+      # The API only reads the board from Neon — it does not call the Odds API
+      # (the GitHub Actions pipeline does that and writes to the same DB).
+      - key: DATABASE_URL        # Neon Postgres URL (paste the raw Neon string)
         sync: false
-      - key: THE_ODDS_API_KEY    # from the-odds-api.com
-        sync: false
-      - key: FRONTEND_ORIGIN     # your Vercel URL, e.g. https://courtiq.vercel.app
+      - key: FRONTEND_ORIGIN     # optional; *.vercel.app is already allowed
         sync: false
       - key: SEASON
         value: "2026"
