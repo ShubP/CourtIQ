@@ -1,6 +1,6 @@
 """End-to-end pipeline: schedule -> history -> train -> odds -> edges -> DB.
 
-Run with:  python -m courtiq.pipeline
+Run with:  python -m sportsiq.pipeline
 The board this writes is what the API/frontend read.
 """
 from __future__ import annotations
@@ -32,7 +32,7 @@ from .sources import odds as odds_src
 from .sources import statsapi
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
-log = logging.getLogger("courtiq.pipeline")
+log = logging.getLogger("sportsiq.pipeline")
 
 _SUFFIXES = {"jr", "sr", "ii", "iii", "iv", "v"}
 

@@ -1,6 +1,6 @@
-# CourtIQ ⚡ — MLB Prop Edge Finder
+# SportsIQ ⚡ — MLB Prop Edge Finder
 
-CourtIQ predicts MLB player‑prop outcomes with a machine‑learning model, compares
+SportsIQ predicts MLB player‑prop outcomes with a machine‑learning model, compares
 those projections to **live sportsbook lines**, and surfaces the bets with the
 highest **expected‑value edge** — ranked, filterable, and explained.
 
@@ -47,7 +47,7 @@ ignored by design.
        GitHub Actions cron
 ```
 
-- **backend/** — Python package `courtiq`: data sources, ML, pipeline, FastAPI.
+- **backend/** — Python package `sportsiq`: data sources, ML, pipeline, FastAPI.
 - **web/** — Vite + React + TypeScript + Tailwind v4 frontend.
 - **DB** — SQLAlchemy; local dev defaults to SQLite, prod uses Postgres via
   `DATABASE_URL`.
@@ -66,8 +66,8 @@ pip install -r requirements.txt
 
 cp .env.example .env            # optional: add THE_ODDS_API_KEY for live lines
 
-python -m courtiq.pipeline      # builds the board (uses SQLite by default)
-uvicorn courtiq.api:app --port 8080 --reload
+python -m sportsiq.pipeline      # builds the board (uses SQLite by default)
+uvicorn sportsiq.api:app --port 8080 --reload
 ```
 
 ### 2. Frontend

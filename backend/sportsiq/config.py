@@ -15,7 +15,7 @@ load_dotenv(BACKEND_DIR / ".env")
 # Prod: set DATABASE_URL to your Neon Postgres URL, e.g.
 #   postgresql+psycopg2://user:pass@host/db?sslmode=require
 # `or` so an empty DATABASE_URL= in .env still falls back to local SQLite.
-DATABASE_URL = os.getenv("DATABASE_URL") or f"sqlite:///{BACKEND_DIR / 'courtiq.db'}"
+DATABASE_URL = os.getenv("DATABASE_URL") or f"sqlite:///{BACKEND_DIR / 'sportsiq.db'}"
 # Accept a Neon/Heroku-style URL verbatim: normalize to the psycopg2 driver.
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)

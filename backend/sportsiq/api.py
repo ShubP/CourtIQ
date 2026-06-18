@@ -1,7 +1,7 @@
 """FastAPI app serving the precomputed edge board to the frontend.
 
 Read-only: the pipeline writes the board; the API just serves it. Run with:
-    uvicorn courtiq.api:app --reload --port 8080
+    uvicorn sportsiq.api:app --reload --port 8080
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ from .models import (
     Team,
 )
 
-app = FastAPI(title="CourtIQ API", version="0.1.0")
+app = FastAPI(title="SportsIQ API", version="0.1.0")
 
 # CORS: allow the Vite dev server and (optionally) a deployed frontend origin.
 _origins = ["http://localhost:5173", "http://127.0.0.1:5173"]

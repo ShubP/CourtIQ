@@ -16,8 +16,8 @@ venv/
 .ruff_cache/
 
 # --- Local dev database + model artifacts ---
-backend/courtiq.db
-backend/courtiq.db-journal
+backend/sportsiq.db
+backend/sportsiq.db-journal
 backend/models/*.joblib
 
 # --- Node / frontend ---

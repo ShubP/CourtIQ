@@ -1,7 +1,7 @@
 """Unit tests for the betting math (no network/DB)."""
 import math
 
-from courtiq.ml.probability import (
+from sportsiq.ml.probability import (
     american_to_decimal,
     american_to_implied_prob,
     best_edge,

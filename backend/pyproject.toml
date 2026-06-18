@@ -1,7 +1,7 @@
 [project]
-name = "courtiq-backend"
+name = "sportsiq-backend"
 version = "0.1.0"
-description = "CourtIQ MLB edge-prediction backend, data pipeline, and ML models"
+description = "SportsIQ MLB edge-prediction backend, data pipeline, and ML models"
 requires-python = ">=3.11"
 
 [tool.ruff]

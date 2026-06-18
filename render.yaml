@@ -1,13 +1,13 @@
-# Render Blueprint for the CourtIQ API (FastAPI).
+# Render Blueprint for the SportsIQ API (FastAPI).
 # The frontend deploys separately on Vercel; the DB is Neon Postgres.
 services:
   - type: web
-    name: courtiq-api
+    name: sportsiq-api
     runtime: python
     rootDir: backend
     plan: free
     buildCommand: pip install -r requirements-api.txt
-    startCommand: uvicorn courtiq.api:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn sportsiq.api:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION

@@ -131,7 +131,7 @@ export function ModelPerformance() {
       {data && data.length === 0 && (
         <Card>
           <CardContent className="py-10 text-center text-[var(--color-muted)]">
-            No backtest metrics yet. Run <code>python -m courtiq.ml.backtest</code>.
+            No backtest metrics yet. Run <code>python -m sportsiq.ml.backtest</code>.
           </CardContent>
         </Card>
       )}

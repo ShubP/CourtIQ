@@ -187,7 +187,7 @@ export default function App() {
             <CardContent className="py-8 text-center text-[var(--color-neg)]">
               {error}
               <div className="text-[var(--color-muted)] text-sm mt-1">
-                Is the API running on :8080? Try <code>uvicorn courtiq.api:app --port 8080</code>
+                Is the API running on :8080? Try <code>uvicorn sportsiq.api:app --port 8080</code>
               </div>
             </CardContent>
           </Card>
@@ -210,7 +210,7 @@ export default function App() {
         )}
 
         <footer className="mt-10 text-center text-xs text-[var(--color-muted)]">
-          CourtIQ · projections are model estimates for informational purposes only · not betting advice
+          SportsIQ · projections are model estimates for informational purposes only · not betting advice
         </footer>
       </main>
     </div>

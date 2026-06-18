@@ -1,4 +1,4 @@
-name: CourtIQ data pipeline
+name: SportsIQ data pipeline
 
 # Refreshes schedule, retrains models, pulls live lines, and writes the edge
 # board to the (Neon) database. The API just serves whatever this produces.
@@ -35,10 +35,10 @@ jobs:
           ODDS_API_REGION: us
           ODDS_MARKETS: "pitcher_strikeouts,batter_hits_runs_rbis"
           SEASON: "2026"
-        run: python -m courtiq.pipeline
+        run: python -m sportsiq.pipeline
 
       - name: Refresh backtest metrics (no odds credits used)
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SEASON: "2026"
-        run: python -m courtiq.ml.backtest
+        run: python -m sportsiq.ml.backtest

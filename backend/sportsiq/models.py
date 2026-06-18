@@ -1,4 +1,4 @@
-"""SQLAlchemy ORM models — the CourtIQ schema.
+"""SQLAlchemy ORM models — the SportsIQ schema.
 
 Works on both SQLite (local dev) and Postgres (Neon/RDS in prod) via DATABASE_URL.
 No auth/users: the app is open per the product spec.

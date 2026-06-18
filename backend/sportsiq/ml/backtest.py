@@ -3,7 +3,7 @@
 Time-ordered split (train on earlier games, evaluate on later ones) so there's
 no look-ahead. Produces the numbers shown on the Model Performance dashboard:
 projection MAE/RMSE, Brier score (raw vs calibrated), a calibration curve,
-hit-rate and a proxy ROI. Run with:  python -m courtiq.ml.backtest
+hit-rate and a proxy ROI. Run with:  python -m sportsiq.ml.backtest
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from . import features as F
 from .probability import expected_value, prob_over
 from .train import _blend, _fit_calibrator, _new_regressor, estimate_dispersion, pick_blend
 
-log = logging.getLogger("courtiq.backtest")
+log = logging.getLogger("sportsiq.backtest")
 
 _OFFSETS = (-1.5, -0.5, 0.5, 1.5)
 

@@ -21,7 +21,7 @@ export function Header({ meta }: { meta: Meta | null }) {
           </div>
           <div>
             <div className="text-lg font-bold tracking-tight leading-none">
-              Court<span className="text-[var(--color-accent)]">IQ</span>
+              Sports<span className="text-[var(--color-accent)]">IQ</span>
             </div>
             <div className="text-[11px] text-[var(--color-muted)] leading-none mt-0.5">
               MLB Prop Edge Finder
